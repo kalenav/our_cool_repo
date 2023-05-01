@@ -41,3 +41,22 @@ def build_header(status_code, status_text, additional_headers = {}):
         headers.append(f'{header}: {header_dict[header]}')
     headers = "\n".join(headers)
     return f'''HTTP/1.1 {status_code} {status_text}\r{headers}\r'''
+
+def get_request(text):
+    requested_file_path = text.split(' ')[1]
+    path = f'{DIRECTORY_PATH}{requested_file_path}'
+    requested_content_type = mimetypes.types_map[f".{path.split('.')[1]}"]
+    ok = True
+
+    try:
+        with open(path, 'rb') as file:
+            response = file.read().decode()
+    except Exception as e:
+        ok = False
+        response = 'Error 404: File not found'
+    
+    code, comment, content_type = ("200", "OK", requested_content_type) if ok else ("404", "Not Found", "text/html")
+    additional_headers = {'Content-Type': content_type}
+    header = f'{build_header(code, comment, additional_headers)}'
+
+    return (header, response)
