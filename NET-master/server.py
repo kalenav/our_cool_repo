@@ -110,3 +110,11 @@ def post_request(text):
     header = f'{build_header(code, comment, additional_headers)}'
 
     return (header, response)
+
+if __name__ == '__main__':
+    parse = argparse.ArgumentParser()
+    parse.add_argument("--port", '-p', type=int, help='Set server port', default=8080)
+    parse.add_argument("--directory", "-d", type=str, help='Set directory',
+                       default='D:/uchoba_seti/NET-master/static/')
+    args = parse.parse_args()
+    listen(port=args.port, path=args.directory)
