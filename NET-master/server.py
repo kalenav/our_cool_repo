@@ -23,6 +23,24 @@ def listen(port, path):
             conn, addr = server.accept()
             addr = f"{addr[0]}:{addr[1]}"
             logging.info(f"Established a connection with {addr}.")
+            handle_request(conn, addr)
+
+def handle_request(conn, addr):
+    message = conn.recv(4096).decode()
+    if not message:
+        logging.info("Empty request body; rejecting and closing connection.")
+        conn.close()
+        logging.info(f"Closed connection with {addr}.")
+        return
+    method = get_method(message)
+    logging.info(f"Received a {method} request from {addr}.")
+    header, response = assemble_response(message)
+    data = f"{header}\n{response}"
+    conn.send(data.encode())
+    logging.info(f"Responded to {addr}. Closing connection. Response: \n\n{data}\n\n")
+
+    conn.close()
+    logging.info(f"Closed connection with {addr}.")
 
 def get_method(message):
     return message.split(" ")[0]
