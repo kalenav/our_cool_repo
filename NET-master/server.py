@@ -60,3 +60,26 @@ def get_request(text):
     header = f'{build_header(code, comment, additional_headers)}'
 
     return (header, response)
+
+def options_request():
+    return (build_header("200", "OK"), "")
+
+def post_request(text):
+    requested_file_path = text.split(' ')[1]
+    path = f'{DIRECTORY_PATH}{requested_file_path}'
+    ok = True
+
+    try:
+        with open(path, "w") as file:
+            json.dump(json.loads(get_post_json(text)), file)
+        with open(path, "rb") as file:
+            response = True
+    except Exception as e:
+        ok = False
+        response = False
+
+    code, comment, content_type = ("200", "OK", 'text/html') if ok else ("500", "Internal Server Error", "application/json")
+    additional_headers = {'Content-Type': content_type}
+    header = f'{build_header(code, comment, additional_headers)}'
+
+    return (header, response)
