@@ -30,6 +30,15 @@ def get_method(message):
 def get_post_json(message):
     return message.split("\n")[-1]
 
+def assemble_response(text: str):
+    method = get_method(text)
+    if method == "GET":
+        return get_request(text)
+    elif method == "POST":
+        return post_request(text)
+    elif method == "OPTIONS":
+        return options_request()
+
 def build_header(status_code, status_text, additional_headers = {}):
     headers = []
     header_dict = dict({
