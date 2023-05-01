@@ -23,3 +23,15 @@ def listen(port, path):
             conn, addr = server.accept()
             addr = f"{addr[0]}:{addr[1]}"
             logging.info(f"Established a connection with {addr}.")
+
+def build_header(status_code, status_text, additional_headers = {}):
+    headers = []
+    header_dict = dict({
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Method': 'POST, GET, OPTIONS'
+    })
+    header_dict.update(additional_headers)
+    for header in header_dict:
+        headers.append(f'{header}: {header_dict[header]}')
+    headers = "\n".join(headers)
+    return f'''HTTP/1.1 {status_code} {status_text}\r{headers}\r'''
