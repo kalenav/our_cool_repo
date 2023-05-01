@@ -24,6 +24,12 @@ def listen(port, path):
             addr = f"{addr[0]}:{addr[1]}"
             logging.info(f"Established a connection with {addr}.")
 
+def get_method(message):
+    return message.split(" ")[0]
+
+def get_post_json(message):
+    return message.split("\n")[-1]
+
 def build_header(status_code, status_text, additional_headers = {}):
     headers = []
     header_dict = dict({
